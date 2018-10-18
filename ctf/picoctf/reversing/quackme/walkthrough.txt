@@ -1,0 +1,17 @@
+The password is a string because of strcmpr 
+
+https://stackoverflow.com/questions/4720807/how-to-skip-some-lines-in-the-gdb-debugger
+https://stackoverflow.com/questions/4037308/can-i-use-gdb-to-skip-a-line-without-having-to-type-line-numbers
+
+
+break *0x080486c5
+
+
+
+
+
+
+
+
+
+Trying to avoid checks and get to the part of the program that outputs -->  push str.You_are_winner  

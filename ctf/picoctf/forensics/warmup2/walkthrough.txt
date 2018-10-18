@@ -1,0 +1,63 @@
+PNG file Header Chunk info
+https://asecuritysite.com/forensics/magic
+https://asecuritysite.com/forensics/png
+
+Modifying header using Radare2
+https://monosource.gitbooks.io/radare2-explorations/content/intro/editing.html
+
+PNG file structure 
+http://www.libpng.org/pub/png/book/chapter08.html
+
+
+Problem PNG cant open:
+
+Tried to open: Fatal error reading PNG image file: Not a PNG file
+
+Current file:
+flag.png: JPEG image data, JFIF standard 1.01
+Current magic number is ff d8 which is for a JPEG file
+
+
+However, a PNG magic number is 89 50 4E 47 .PNG 
+
+
+
+
+I need to modify the header so that it has the magic number of the PNG file. 
+
+Used Vim as hex editor to change file header to correct magic numbers:
+%!xxd -- convert binary to hexdump
+%!xxd -r  -- convert hexdump into binary
+set binary
+
+
+original:                                                        
+00000000: ffd8 ffe0 0010 4a46 4946 0001 0101 004b  ......JFIF    
+
+changed headerfile: 
+00000000: 8950 4e47 0d0a 1a0a 4946 0001 0101 004b  .PNG....IF.....K 
+
+But i get an error when attempting to open the file:
+Fatal error reading PNG image file: [01][01][00]K: invalid chunk type
+
+I thought the 8 byte file signature 8950 4e47 0d0a 1a0a was all that was needed for PNG file to work. 
+But a PNG subatomic structure has three chunks: image header chunk, IHDR, IDAT, and IEND. 
+
+
+
+
+-----
+REMOVING PNG file extension makes it work-- solution
+extensions are a lie--- it was a jpeg file with a png 
+it was a jpeg file with the wrong extension -- the magic number should have told me it should have been with a jpeg extension
+
+if you change the extension to .jpeg, it also works 
+
+
+
+
+ 
+
+
+
+

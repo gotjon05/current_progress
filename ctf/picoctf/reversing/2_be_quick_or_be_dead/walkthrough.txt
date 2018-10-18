@@ -1,0 +1,32 @@
+Can you call stuff without executing the entire program?
+	-Skipping checks that prevent the program from executing the flag
+	-Or by satisying the checks by changing the values of registers
+	
+
+skipping over functions in GDB
+https://www-zeuthen.desy.de/unix/unixguide/infohtml/gdb/Skipping-Over-Functions-and-Files.html
+
+
+
+Calling and passing value to individual function in GDB
+https://stackoverflow.com/questions/1354731/how-to-evaluate-functions-in-gdb
+ftp://ftp.gnu.org/old-gnu/Manuals/gdb/html_node/gdb_115.html
+:w
+
+
+
+https://jvns.ca/blog/2018/01/04/how-does-gdb-call-functions/
+
+
+
+
+What will the key finally be?
+
+
+
+
+
+
+
+plan--	skip over sym.set_timer 
+ 	jump to get_key function

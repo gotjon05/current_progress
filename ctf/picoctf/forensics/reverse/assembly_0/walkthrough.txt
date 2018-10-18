@@ -1,0 +1,14 @@
+
+instructions:
+	what does asm0(0xc9, 0xb0) return?
+arg 1 = oxc9
+arg 2 = 0xb0
+
+
+esp --last item pushed onto stack but not yet popped off
+
+eax -- used to transfer returns values back tto caller
+
+
+
+

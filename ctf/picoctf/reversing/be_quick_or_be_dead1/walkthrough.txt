@@ -1,0 +1,87 @@
+https://reverseengineering.stackexchange.com/questions/17119/radare2-set-local-variable?noredirect=1
+https://moveax.me/crackme0x02/
+https://reverseengineering.stackexchange.com/questions/17119/radare2-set-local-variable
+
+
+
+
+
+
+
+
+
+Why is the program closing so quickly? 
+	-the program closes before the sym.calculate_key function can complete 
+	-within sym.set_timer rax is not equal to 0xffffffffffffffff and the program exits
+	-- need to skip  0x00400769 jne 0x400789
+ 
+
+Solution -- stall timer, and since the check takes a long time -- putting the solution to the comparison so it is equal without the long process 
+ 
+
+pause it from finishing instead of bypass 
+gdb break -- stops code from running and breaks it-- 
+
+
+
+
+
+|           0x0040070a      c745fc3d4bf5.  mov dword [local_4h], 0x6ff54b3d
+|           ; CODE XREF from sym.calculate_key (0x40071c)
+|       .-> 0x00400711      8345fc01       add dword [local_4h], 1
+|       :   0x00400715      817dfc7a96ea.  cmp dword [local_4h], 0xdfea967a ; 
+
+
+
+sym.calculate_key
+
+1878346557 --0x6ff54b3d
+
+3756693114 --0xdfea967a
+
+
+
+https://radare.gitbooks.io/radare2book/content/debugger/getting_started.html
+https://reverseengineering.stackexchange.com/questions/17119/radare2-set-local-variable
+
+I want to store the hex value 0xdfea967a in the local variable var local_4h
+
+
+afvd -- displays local variables 
+
+[0x0040070a]> afvd
+var local_4h = 0x7ffc3f25038c  0x3f2503a06ff54b3d   =K.o..%?
+afvd local_4h
+wx which stands for "write hex":
+
+difference bettween .afvd local_4h and afvd local_4h:
+[0x0040070a]> .afvd local_4h
+0x7ffc3f25038c  0x3f2503a07a96eadf   ...z..%?
+[0x0040070a]> afvd local_4h
+pxr $w @rbp-0x4
+
+
+
+
+pxr $w @rbp-0x4
+
+         
+
+
+local variables local_4h, and local_18h -- how to change them
+
+
+
+
+gdb -- turn off timer-- or change timer 
+
+
+
+USEFUll Commands 
+
+ps --   print string
+set to intel -- e asm.syntax = intel
+
+
+
+

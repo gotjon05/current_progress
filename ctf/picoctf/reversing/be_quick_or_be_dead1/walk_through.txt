@@ -1,0 +1,42 @@
+Why does the problem close so quickly?
+
+
+https://www.iximeow.net/ctfs/2017/layerone/writeup_sheb-teth.html
+http://people.cs.pitt.edu/~alanjawi/cs449/code/shell/UnixSignals.htm
+https://en.wikipedia.org/wiki/Signal_(IPC)
+https://linux.die.net/man/2/alarm
+http://titania.ctie.monash.edu.au/signals/
+https://major.io/2009/06/15/two-great-signals-sigstop-and-sigcont/
+
+
+
+Signal Handler 
+Each signal may have a signal handler, which is a function that gets called when the process receives that signal. The function is called in "asynchronous mode", meaning that no where in your program you have code that calls this function directly. Instead, when the signal is sent to the process, the operating system stops the execution of the process, and "forces" it to call the signal handler function. When that signal handler function returns, the process continues execution from wherever it happened to be before the signal was received, as if this interruption never occurred.
+
+
+
+
+
+
+0x00400751      be23074000     mov esi, sym.alarm_handler  ; 0x400723
+0x00400756      bf0e000000     mov edi, 0xe                ; 14
+0x0040075b      e810feffff     call sym.imp.__sysv_signal
+
+#define SIGALRM		14
+
+Arguments to signal would be 14 and the signal handler sym.alarm_handler
+
+14 is the number for SIGALRM. SIGALRM is sent to process when real or clock time elapses.
+
+
+Why putting a break, followed by running the program, prevents the program from completing at the original intended real/clock time. 
+
+TOP is also a signal that a process cannot catch, and forces the process's suspension immediately. This is useful when debugging programs whose behavior depends on timing. Suppose that process A needs to send some data to process B, and you want to check some system parameters after the message is sent, but before it is received and processed by process B. One way to do that would be to send a STOP signal to process B, thus causing its suspension, and then running process A and waiting until it sends its oh-so important message to process B. Now you can check whatever you want to, and later on you can use the CONT signal to continue process B's execution, which will then receive and process the message sent from process A.
+
+Scheduling delays can, as ever, cause the execution of the process to be delayed by an arbitrary amount of time.
+
+
+
+dc: run the program
+
+
