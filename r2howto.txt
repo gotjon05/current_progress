@@ -1,0 +1,42 @@
+
+
+
+General guides to getting started with R2 
+https://www.radare.org/get/THC2018.pdf
+https://blog.dutchcoders.io/getting-started-with-radare2/
+
+
+Making changes to ~/.radare2rc
+https://gist.github.com/williballenthin/6857590dab3e2a6559d7
+
+
+
+
+
+Highlighted features of R2 for the purpose of Reversing and Binary Exploitation 
+
+
+Mapping Files
+https://radare.gitbooks.io/radare2book/basic_commands/mapping_files.html
+https://docs.microsoft.com/en-us/windows/desktop/memory/file-mapping
+Purpose
+	Maps will put a specific region of an fd in virtual addressing
+	mapping the file is required for manipulating a loaded binary file 
+
+Command to map a file in R2 
+	oo+
+Example where file mapping matters
+	0x0040070a]> wa mov dword [rbp-0x4], 0xdfa8fc77
+	Failed to write  -----
+	[0x0040070a]> oo+
+	[0x0040070a]> wa mov dword [rbp-0x4], 0xdfa8fc77
+	Written 7 byte(s) (mov dword [rbp-0x4], 0xdfa8fc77) = wx c745fc77fca8df
+	[0x0040070a]> 
+
+
+Seeking
+	Purpose 
+		
+
+Writing Data
+	Purpose 
