@@ -1,30 +1,37 @@
 
-
-
 General guides to getting started with R2 
-https://www.radare.org/get/THC2018.pdf
-https://blog.dutchcoders.io/getting-started-with-radare2/
-
+	https://www.radare.org/get/THC2018.pdf
+	https://blog.dutchcoders.io/getting-started-with-radare2/
+	https://asciinema.org/~Maijin?page=2
 
 Making changes to ~/.radare2rc
-https://gist.github.com/williballenthin/6857590dab3e2a6559d7
+	https://gist.github.com/williballenthin/6857590dab3e2a6559d7
+	https://github.com/radare/radare2/issues/10748
 
-
-
+To set break points in R2
+	-- Need to run in ("debug mode") 
+	r2 -d program
+	otherwise, you will get--- "cannot place a breakpoint on unmapped memory"
 
 
 Highlighted features of R2 for the purpose of Reversing and Binary Exploitation 
 
+Search for string in binary using r2
+	https://radare.gitbooks.io/radare2book/search_bytes/basic_searches.html
+
 
 Mapping Files
-https://radare.gitbooks.io/radare2book/basic_commands/mapping_files.html
-https://docs.microsoft.com/en-us/windows/desktop/memory/file-mapping
+	https://radare.gitbooks.io/radare2book/basic_commands/mapping_files.html
+	https://docs.microsoft.com/en-us/windows/desktop/memory/file-mapping
 Purpose
 	Maps will put a specific region of an fd in virtual addressing
 	mapping the file is required for manipulating a loaded binary file 
 
-Command to map a file in R2 
-	oo+
+Command to map file blah in R2 
+:>oo+
+:> o
+3 * rwx 0x00002450 blah
+
 Example where file mapping matters
 	0x0040070a]> wa mov dword [rbp-0x4], 0xdfa8fc77
 	Failed to write  -----
@@ -35,8 +42,44 @@ Example where file mapping matters
 
 
 Seeking
+https://radare.gitbooks.io/radare2book/basic_commands/seeking.html
+	Purpose 
+		Seek to a different place by changing the current offset
+	
+	Examples 
+		Print current address:
+			s
+		Seek to an address:
+			 s 0x0040070a
+
+Print Modes
+https://radare.gitbooks.io/radare2book/basic_commands/print_modes.html
+	Purpose 
+		Display and interpret information
+		Print information that was seeked 
+	Examples
+		pd[?] [sz] [a] [b]       disassemble N opcodes (pd) or N bytes (pD)
+				
+
+Writing Data
+https://radare.gitbooks.io/radare2book/basic_commands/write.html
 	Purpose 
 		
 
-Writing Data
+ 	Examples:
+		Writing the opcode mov from the current offset and moving a memory address into a variable
+			wa mov dword [rbp-0x4], 0xdfa8fc77
+
+
+Managing Variables 
+https://radare.gitbooks.io/radare2book/analysis/variables.html
 	Purpose 
+		-See whats stored in local variables 
+		-
+
+
+
+
+
+
+

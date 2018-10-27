@@ -1,0 +1,101 @@
+
+
+
+
+I did not solve this problem elegently -- but i will provide an in-depth understanding of what other people have done to solve it. I solve the problem by mistake by simply putting a break point and running the bprogram, but i am curious about what actually happened. And more elegant solutions. 
+
+
+Resources used and the questions that they answer:
+	How the debugger communicates with the kernel-- insight on how break points work
+		http://www.alexonlinux.com/how-debugger-works
+
+	Connection bettween breakpoints and SIGTRAP?
+		https://eli.thegreenplace.net/2011/01/27/how-debuggers-work-part-2-breakpoints
+		
+	Does SIGTRAP influence SIGALRM?
+			
+
+
+Questions related to the challenge:
+
+Why does the program exit early without printing the flag?
+	The program exits early because the function sym.set_timer sends SIGALRM to the process before sym.calculate_key() can execute. Sym.calculate_key has a For Loop that takes a long time before it can pass the check to flag. 	
+
+How is it possible to disrupt the sigalarm using a debugger break. Using R2, i set a break ?
+	A breakpoint in the program sends a SIGTRAP signal to the process. . 
+
+
+
+
+
+ sends the process a signal - SIGTRAP.
+
+
+
+
+
+
+
+
+“hold on”. SIGSTOP cannot be caught or ignored.
+
+	Scheduling delays can, as ever, cause the execution of the process to be delayed by an arbitrary amount of time.
+
+
+
+
+
+when real or clock time elapses.
+
+
+
+is faster than the execution time of sym.calculate_key(). The check before the flag             
+
+
+
+
+
+
+Less elegant Solution -- 
+
+
+
+
+
+
+SIGSTOP
+
+
+
+
+Signal Handler
+Each signal may have a signal handler, which is a function that gets called when the process receives that signal. The function is called in "asynchronous mode", meaning that no where in your program you have code that calls this function directly. Instead, when the signal is sent to the process, the operating system stops the execution of the process, and "forces" it to call the signal handler function. When that signal handler function returns, the process continues execution from wherever it happened to be before the signal was received, as if this interruption never occurred.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Why does the program exit early? 
+	The program exits early because sym.set_timer is faster than the execution time of sym.calculate_key(). The check before the flag 
+
+
+
+
+
+My first attempt was to disable the timer by simply setting a break point and running the program. 
+
+
+
+However, i found a more elegant alternative. 
