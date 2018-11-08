@@ -1,7 +1,12 @@
-vagrant scp 
-https://github.com/invernizzi/vagrant-scp
 
-From vagrant to home
+
+Copy many files vagrant to home using vagrantscp 
+	https://github.com/invernizzi/vagrant-scp
+
+
+
+
+Copy one file From vagrant to home
 	vagrant scp 7a98dc4:/home/vagrant/current_progress .
 
 

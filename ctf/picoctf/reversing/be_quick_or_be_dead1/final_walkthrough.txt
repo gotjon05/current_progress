@@ -1,19 +1,24 @@
-
-
-
-
-I did not solve this problem elegently -- but i will provide an in-depth understanding of what other people have done to solve it. I solve the problem by mistake by simply putting a break point and running the bprogram, but i am curious about what actually happened. And more elegant solutions. 
-
+I did not solve this problem elegently. I solve the problem by simply putting a break point and running the bprogram,     but without understanding what actually happened.  -- but i will provide an in-depth explanation of what other people have done to solve it. I will explore this and provide details of the more elegant solution 
 
 Resources used and the questions that they answer:
+
+	What are signals -- some variety -- important when thinking about SIGALRM and SIGTRAP
+		http://titania.ctie.monash.edu.au/signals/
+		ftp://ftp.gnu.org/old-gnu/Manuals/glibc-2.2.3/html_chapter/libc_24.html
+
 	How the debugger communicates with the kernel-- insight on how break points work
 		http://www.alexonlinux.com/how-debugger-works
-
-	Connection bettween breakpoints and SIGTRAP?
+		http://mainisusuallyafunction.blogspot.com/2011/01/implementing-breakpoints-on-x86-linux.html
+		https://eli.thegreenplace.net/2011/01/27/how-debuggers-work-part-2-breakpoints
+	
+	What does SIGALRM received 0 indicate?
+		http://www.csl.mtu.edu/cs4411.ck/www/NOTES/non-local-goto/sig-2.html
+		
+	Connection bettween setting breakpoints and SIGTRAP?
 		https://eli.thegreenplace.net/2011/01/27/how-debuggers-work-part-2-breakpoints
 		
-	Does SIGTRAP influence SIGALRM?
-			
+	How does SIGTRAP influence SIGALRM?
+		SIGTRAP interrupts SIGALRM. When the Signal handler function returns, the process for SIGALRM is canceled 		
 
 
 Questions related to the challenge:
@@ -21,81 +26,78 @@ Questions related to the challenge:
 Why does the program exit early without printing the flag?
 	The program exits early because the function sym.set_timer sends SIGALRM to the process before sym.calculate_key() can execute. Sym.calculate_key has a For Loop that takes a long time before it can pass the check to flag. 	
 
-How is it possible to disrupt the sigalarm using a debugger break. Using R2, i set a break ?
-	A breakpoint in the program sends a SIGTRAP signal to the process. . 
+How is it possible to cancel the sigalarm using a debugger break?
+	A breakpoint in the program sends a SIGTRAP signal to the process interrupting SIGALRM. Since the program does not exit early because of the SIGALRM, it complete sym.calculate_key() and the flag is printed. 
 
+ 
 
+0x00400751      be23074000     mov esi, sym.alarm_handler  ; 0x400723
+0x00400756      bf0e000000     mov edi, 0xe                ; 14
+0x0040075b      e810feffff     call sym.imp.__sysv_signal
 
+#define SIGALRM         14
 
-
- sends the process a signal - SIGTRAP.
-
-
-
-
-
-
-
-
-“hold on”. SIGSTOP cannot be caught or ignored.
-
-	Scheduling delays can, as ever, cause the execution of the process to be delayed by an arbitrary amount of time.
-
-
-
-
-
-when real or clock time elapses.
-
-
-
-is faster than the execution time of sym.calculate_key(). The check before the flag             
-
-
-
-
-
-
-Less elegant Solution -- 
-
-
-
-
-
-
-SIGSTOP
-
-
-
-
-Signal Handler
-Each signal may have a signal handler, which is a function that gets called when the process receives that signal. The function is called in "asynchronous mode", meaning that no where in your program you have code that calls this function directly. Instead, when the signal is sent to the process, the operating system stops the execution of the process, and "forces" it to call the signal handler function. When that signal handler function returns, the process continues execution from wherever it happened to be before the signal was received, as if this interruption never occurred.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Why does the program exit early? 
-	The program exits early because sym.set_timer is faster than the execution time of sym.calculate_key(). The check before the flag 
-
-
+Arguments to signal would be 14 and the signal handler sym.alarm_handler
 
 
 
 My first attempt was to disable the timer by simply setting a break point and running the program. 
 
+My soluton:
+
+r2 -d -aaa sym.main
+[0x7fc3286b8c30]> db sym.main
+[0x7fc3286b8c30]> dc 
+Be Quick Or Be Dead 1
+=====================
+
+Calculating key...
+child stopped with signal 14
+[+] SIGNAL 14 errno=0 addr=0x00000000 code=128 ret=0
+[+] signal 14 aka SIGALRM received 0        //alarm(0) cancels the alarm clock effect.
+[0x0040071c]> dc
+Done calculating key
+Printing flag:
+picoCTF{why_bother_doing_unnecessary_computation_29ff5e84}
+[0x7fc3283ba748]> 
+
+-----------------------------------------
 
 
 However, i found a more elegant alternative. 
+
+
+
+Person A speeds up the execution of sym.calculate_key before sigalrm can interrupt the process.  
+
+│   sym.calculate_key ();
+   0x0040070a      c745fc3d4bf5.  mov dword [local_4h], 0x6ff54b3d
+│           ; CODE XREF from sym.calculate_key (0x40071c)
+│       ┌─> 0x00400711      8345fc01       add dword [local_4h], 1
+│       ⁝   0x00400715      817dfc7a96ea.  cmp dword [local_4h], 0xdfea967a ; [0xdfea967a:4]=-1
+│       └─< 0x0040071c      75f3           jne 0x400711
+
+In sym.calculate_key, the function has a check that compares local variable local_4h with 0xdfea967a. The loop takes too long for this function to execuate before the SIGLRM. 
+
+Rather than waiting for local_4h to have 0xdfea967a. Person A, moves the value 0xdfea967 into local_4h
+
+
+    [0x0040070a]> oo+
+	[0x0040070a]> wa mov dword [rbp-0x4], 0xdfa8fc77
+	Written 7 byte(s) (mov dword [rbp-0x4], 0xdfa8fc77) = wx c745fc77fca8df
+	[0x0040070a]>
+
+
+That cmp check is immedietyl passed, and the program finishes before the alrm giving the Pass 
+
+
+
+
+
+
+
+
+
+
+
+

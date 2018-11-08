@@ -4,9 +4,12 @@ General guides to getting started with R2
 	https://blog.dutchcoders.io/getting-started-with-radare2/
 	https://asciinema.org/~Maijin?page=2
 
-Making changes to ~/.radare2rc
+Making changes to ~/.radare2rc to configure Radare2
+	https://radare.gitbooks.io/radare2book/configuration/intro.html
 	https://gist.github.com/williballenthin/6857590dab3e2a6559d7
 	https://github.com/radare/radare2/issues/10748
+	https://r2wiki.readthedocs.io/en/latest/home/tips/
+
 
 To set break points in R2
 	-- Need to run in ("debug mode") 
