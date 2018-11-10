@@ -5,10 +5,18 @@ Copy many files vagrant to home using vagrantscp
 
 
 
+using libvert for vagrant
+	Dealing with the password prompt required by libvert 
+		https://developer.fedoraproject.org/tools/vagrant/vagrant-libvirt.html
+		https://gist.github.com/gangsta/9bd039343463cd0fecd2a9e2cfd8e65d
+		
 
-Copy one file From vagrant to home
+
+	
+
+Copy From vagrant to home
 	vagrant scp 7a98dc4:/home/vagrant/current_progress .
 
 
 
-
+Copy from home to vagrant 
