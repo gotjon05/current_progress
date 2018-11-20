@@ -9,7 +9,26 @@ Making changes to ~/.radare2rc to configure Radare2
 	https://gist.github.com/williballenthin/6857590dab3e2a6559d7
 	https://github.com/radare/radare2/issues/10748
 	https://r2wiki.readthedocs.io/en/latest/home/tips/
+	https://github.com/radare/radare2/blob/master/doc/fortunes.tips
 
+#When commenting out a line in ~/.radare2rc , dont do #foo . Use # foo . That space is important
+#Change your fortune type
+e cfg.fortunes.type = nsfw
+#Disassemble in intel syntax
+e asm.syntax = intel
+# Use UTF-8 to show cool arrows that do not look like crap :)
+e scr.utf8 = true
+# Show comments at right of disassembly if they fit in screen 
+e asm.cmt.right=true
+#Shows pseudocode in disassembly. Eg mov eax, str.ok = > eax = str.ok
+#e asm.pseudo = true
+#inline description of that each line does.
+e asm.describe = true
+#Solarized theme
+eco solarized
+#enable command autocompletion
+e cfg.newtab = 1
+                                                                                                       ~                                                                                                       
 
 To set break points in R2
 	-- Need to run in ("debug mode") 

@@ -1,8 +1,13 @@
 
 
-Copy many files vagrant to home using vagrantscp 
+Using VagrantSCP 
 	https://github.com/invernizzi/vagrant-scp
-
+	Example of sending files from vagrant to Home
+		vagrant scp 6a5be7e:/home/vagrant/current_progress/howtovagrant.txt /home/gotjon05/current_progress
+		-command needs to be executed in vagrant vm folder 
+		-will overwrite if directory is not nested 
+		
+		
 
 
 using libvert for vagrant
@@ -11,12 +16,4 @@ using libvert for vagrant
 		https://gist.github.com/gangsta/9bd039343463cd0fecd2a9e2cfd8e65d
 		
 
-
-	
-
-Copy From vagrant to home
-	vagrant scp 7a98dc4:/home/vagrant/current_progress .
-
-
-
-Copy from home to vagrant 
+Using virtualbox for vagrant 
