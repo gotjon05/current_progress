@@ -70,12 +70,12 @@ However, i found a more elegant alternative.
 
 Person A speeds up the execution of sym.calculate_key before sigalrm can interrupt the process.  
 
-│   sym.calculate_key ();
-   0x0040070a      c745fc3d4bf5.  mov dword [local_4h], 0x6ff54b3d
-│           ; CODE XREF from sym.calculate_key (0x40071c)
-│       ┌─> 0x00400711      8345fc01       add dword [local_4h], 1
-│       ⁝   0x00400715      817dfc7a96ea.  cmp dword [local_4h], 0xdfea967a ; [0xdfea967a:4]=-1
-│       └─< 0x0040071c      75f3           jne 0x400711
+sym.calculate_key ();
+0x0040070a      c745fc3d4bf5.  mov dword [local_4h], 0x6ff54b3d
+		; CODE XREF from sym.calculate_key (0x40071c)
+0x00400711      8345fc01       add dword [local_4h], 1
+0x00400715      817dfc7a96ea.  cmp dword [local_4h], 0xdfea967a ; [0xdfea967a:4]=-1
+0x0040071c      75f3           jne 0x400711
 
 In sym.calculate_key, the function has a check that compares local variable local_4h with 0xdfea967a. The loop takes too long for this function to execuate before the SIGLRM. 
 
