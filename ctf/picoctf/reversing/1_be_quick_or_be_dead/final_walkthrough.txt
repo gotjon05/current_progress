@@ -1,0 +1,154 @@
+I did not solve this problem elegently. I solved the problem by simply putting a break point and running the program and i magically received the flag without understanding what happened. 
+I will provide an in-depth explanation of what other people have done to solve it. I will explore this and provide details of the more elegant solution 
+
+Resources used and the questions that they answer:
+
+	What are signals -- some variety -- important when thinking about SIGALRM and SIGTRAP
+		http://titania.ctie.monash.edu.au/signals/
+		ftp://ftp.gnu.org/old-gnu/Manuals/glibc-2.2.3/html_chapter/libc_24.html
+
+	How the debugger communicates with the kernel-- insight on how break points work
+		http://www.alexonlinux.com/how-debugger-works
+		http://mainisusuallyafunction.blogspot.com/2011/01/implementing-breakpoints-on-x86-linux.html
+		https://eli.thegreenplace.net/2011/01/27/how-debuggers-work-part-2-breakpoints
+	
+	What does SIGALRM received 0 indicate?
+		http://www.csl.mtu.edu/cs4411.ck/www/NOTES/non-local-goto/sig-2.html
+		
+	Connection bettween setting breakpoints and SIGTRAP?
+		https://eli.thegreenplace.net/2011/01/27/how-debuggers-work-part-2-breakpoints
+		
+	How does SIGTRAP influence SIGALRM?
+		SIGTRAP interrupts SIGALRM. When the Signal handler function returns, the process for SIGALRM is canceled 		
+
+
+
+When the program runs, why does it exit early without printing the flag?
+	The program exits early because the function sym.set_timer sends SIGALRM to the process before sym.calculate_key() can execute. Sym.calculate_key has a For Loop that takes a long time before it can pass the check to flag. 	
+
+
+Why do i get the flag when setting breakpoints and running the program?
+	A breakpoint in the program sends a SIGTRAP signal to the process interrupting SIGALRM. Since the program does not exit early because of the SIGALRM, it complete sym.calculate_key() and the flag is printed. 
+
+
+0x00400751      be23074000     mov esi, sym.alarm_handler  ; 0x400723
+0x00400756      bf0e000000     mov edi, 0xe                ; 14
+0x0040075b      e810feffff     call sym.imp.__sysv_signal
+
+#define SIGALRM         14
+
+Arguments to signal would be 14 and the signal handler sym.alarm_handler
+
+
+
+My first attempt was to disable the timer by simply setting a break point and running the program. 
+
+My soluton:
+
+r2 -d -aaa sym.main
+[0x7fc3286b8c30]> db sym.main
+[0x7fc3286b8c30]> dc 
+Be Quick Or Be Dead 1
+=====================
+
+Calculating key...
+child stopped with signal 14
+[+] SIGNAL 14 errno=0 addr=0x00000000 code=128 ret=0
+[+] signal 14 aka SIGALRM received 0        //alarm(0) cancels the alarm clock effect.
+[0x0040071c]> dc
+Done calculating key
+Printing flag:
+picoCTF{why_bother_doing_unnecessary_computation_29ff5e84}
+[0x7fc3283ba748]> 
+
+-----------------------------------------
+
+
+However, i found a more elegant alternative. 
+
+
+
+Person A speeds up the execution of sym.calculate_key before sigalrm can interrupt the process.  
+
+sym.calculate_key ();
+0x0040070a      c745fc3d4bf5.  mov dword [local_4h], 0x6ff54b3d
+		; CODE XREF from sym.calculate_key (0x40071c)
+0x00400711      8345fc01       add dword [local_4h], 1
+0x00400715      817dfc7a96ea.  cmp dword [local_4h], 0xdfea967a ; [0xdfea967a:4]=-1
+0x0040071c      75f3           jne 0x400711
+
+In sym.calculate_key, the function has a check that compares local variable local_4h with 0xdfea967a. The loop takes too long for this function to execuate before the SIGLRM. 
+
+Rather than waiting for local_4h to have 0xdfea967a. Person A, moves the value 0xdfea967 into local_4h
+
+
+    [0x0040070a]> oo+
+	[0x0040070a]> wa mov dword [rbp-0x4], 0xdfa8fc77
+	Written 7 byte(s) (mov dword [rbp-0x4], 0xdfa8fc77) = wx c745fc77fca8df
+	[0x0040070a]>
+
+
+That cmp check is immedietyl passed, and the program finishes before the alrm giving the Pass 
+
+
+
+
+Another alternative method is to overwrite the set_timer function with a nop sled. 
+
+I opened the file in a writing mode using -w flag: r2 -w file 
+and mapped the file using oo+
+
+I wrote intel nops to the address of set_timer 
+	0x00400845      e8f8feffff     call sym.set_timer 
+	[0x004005a0]> wx 90 @ 0x0040084f
+
+I ran into some issues when i tired to run the program, with the expectation that set_timer would be skipped. 
+	[1]    28696 illegal hardware instruction (core dumped)  ./be-quick-or-be-dead-1
+
+
+I tried again, this time reviewing the nop instructions that i used to overwrite the set_timer function. 
+(initially, i was not able to see all the nop codes )
+
+           0x00400840      b800000000     mov eax, 0             
+           0x00400845      90             nop                    
+..
+           0x0040084a      b800000000     mov eax, 0             
+           0x0040084f      e842ffffff     call sym.get_key       
+           0x00400854      b800000000     mov eax, 0             
+           0x00400859      e863ffffff     call sym.print_flag    
+           0x0040085e      b800000000     mov eax, 0             
+
+[0x004005a0]> s 0x00400845
+[0x00400845]> pd 7
+
+	0x00400845      90             nop              
+	0x00400846      90             nop              
+	0x00400847      90             nop              
+	0x00400848      ff             invalid
+	0x00400849      ff             invalid
+	0x0040084a      b800000000     mov eax, 0       
+	0x0040084f      e842ffffff     call sym.get_key 
+
+Rather than being filled with nop codes, there were two invalid codes that probably created the error. 
+
+I wrote over the two invalid codes with nops until nop codes reached the next function
+	wx 9090 @ 0x00400848
+
+0x00400845      90             nop              
+0x00400846      90             nop              
+0x00400847      90             nop              
+0x00400848      90             nop              
+0x00400849      90             nop              
+0x0040084a      b800000000     mov eax, 0       
+0x0040084f      e842ffffff     call sym.get_key 
+
+I ran the program and got the flag. I didnt have to worry about SIGALRM running before calculate_key function could complete 
+
+./be-quick-or-be-dead-1                                                                                                                                                                     			   Be Quick Or Be Dead 1
+=====================
+
+Calculating key...
+Done calculating key
+Printing flag:
+picoCTF{why_bother_doing_unnecessary_computation_29ff5e84}
+

@@ -85,13 +85,31 @@ https://radare.gitbooks.io/radare2book/basic_commands/print_modes.html
 
 Writing Data
 https://radare.gitbooks.io/radare2book/basic_commands/write.html
-	Purpose 
+https://radare.gitbooks.io/radare2book/basic_commands/write.html
+    Purpose
+
+    Steps prior to writing data
+        Neccisary to map the file first
+
+
+    Examples:
+        Writing the opcode mov from the current offset and moving a memory address into a variable
+            wa mov dword [rbp-0x4], 0xdfa8fc77
+
+        Replacing bigger value with smaller value (mov edi, 0x3f7)
+            https://github.com/PlatyPew/picoctf-2018-writeup/tree/master/Reversing/be-quick-or-be-dead-2
+            wa mov edi, 5 @ 0x0040074f
+
+
+
+        Creating a Nop Sled
+            https://github.com/PlatyPew/picoctf-2018-writeup/tree/master/Reversing/be-quick-or-be-dead-2
+            write two intel nops
+                wx 9090909090 @ 0x0040087d
+
+
+ 
 		
-
- 	Examples:
-		Writing the opcode mov from the current offset and moving a memory address into a variable
-			wa mov dword [rbp-0x4], 0xdfa8fc77
-
 
 Managing Variables 
 https://radare.gitbooks.io/radare2book/analysis/variables.html
