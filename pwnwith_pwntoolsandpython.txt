@@ -1,0 +1,7 @@
+Resources
+https://medium.com/bugbountywriteup/learn-pwntools-step-by-step-8c96f2dba61a
+
+
+Using python
+	Pass string as argument into program for buffer overflow
+		./vuln `python -c "print 'a'*(100)"`

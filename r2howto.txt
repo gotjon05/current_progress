@@ -3,6 +3,9 @@ General guides to getting started with R2
 	https://www.radare.org/get/THC2018.pdf
 	https://blog.dutchcoders.io/getting-started-with-radare2/
 	https://asciinema.org/~Maijin?page=2
+	https://blog.xdmtk.org/index.php/2018/05/30/basic-reverse-engineering-with-radare2-part-ii/
+	https://www.megabeets.net/a-journey-into-radare-2-part-1/
+
 
 Making changes to ~/.radare2rc to configure Radare2
 	https://radare.gitbooks.io/radare2book/configuration/intro.html
@@ -30,6 +33,22 @@ eco solarized
 e cfg.newtab = 1
                                                                                                        ~                                                                                                       
 
+
+Preliminary work
+	rabin2 -I --- extracting information from binary files
+	find strings
+		iz
+	continue the execution process until main is reached. 
+		[0xf7797b30]> dcu main
+
+
+
+Visual Graph Mode
+Visual Graph Mode by pressing  VV
+	r to change color 
+	
+
+
 To set break points in R2
 	-- Need to run in ("debug mode") 
 	r2 -d program
@@ -38,35 +57,35 @@ To set break points in R2
 
 Highlighted features of R2 for the purpose of Reversing and Binary Exploitation 
 
-Search for string in binary using r2
-	https://radare.gitbooks.io/radare2book/search_bytes/basic_searches.html
+	Search for string in binary using r2
+		https://radare.gitbooks.io/radare2book/search_bytes/basic_searches.html
 
 
 Mapping Files
-	https://radare.gitbooks.io/radare2book/basic_commands/mapping_files.html
-	https://docs.microsoft.com/en-us/windows/desktop/memory/file-mapping
-Purpose
-	Maps will put a specific region of an fd in virtual addressing
-	mapping the file is required for manipulating a loaded binary file 
+https://radare.gitbooks.io/radare2book/basic_commands/mapping_files.html
+https://docs.microsoft.com/en-us/windows/desktop/memory/file-mapping
+	Purpose
+		Maps will put a specific region of an fd in virtual addressing
+		mapping the file is required for manipulating a loaded binary file 
 
-Command to map file blah in R2 
-:>oo+
-:> o
-3 * rwx 0x00002450 blah
+	Examples 
+		Command to map file blah in R2 
+		:>oo+
+		:> o
+		3 * rwx 0x00002450 blah
 
-Example where file mapping matters
-	0x0040070a]> wa mov dword [rbp-0x4], 0xdfa8fc77
-	Failed to write  -----
-	[0x0040070a]> oo+
-	[0x0040070a]> wa mov dword [rbp-0x4], 0xdfa8fc77
-	Written 7 byte(s) (mov dword [rbp-0x4], 0xdfa8fc77) = wx c745fc77fca8df
-	[0x0040070a]> 
+		0x0040070a]> wa mov dword [rbp-0x4], 0xdfa8fc77
+		Failed to write  -----
+		[0x0040070a]> oo+
+		[0x0040070a]> wa mov dword [rbp-0x4], 0xdfa8fc77
+		Written 7 byte(s) (mov dword [rbp-0x4], 0xdfa8fc77) = wx c745fc77fca8df
+		[0x0040070a]> 
 
 
 Seeking
 https://radare.gitbooks.io/radare2book/basic_commands/seeking.html
 	Purpose 
-		Seek to a different place by changing the current offset
+		Seek to a different place by changing the current offset-- used in conjunction with pd
 	
 	Examples 
 		Print current address:
@@ -93,23 +112,40 @@ https://radare.gitbooks.io/radare2book/basic_commands/write.html
 
 
     Examples:
-        Writing the opcode mov from the current offset and moving a memory address into a variable
-            wa mov dword [rbp-0x4], 0xdfa8fc77
+        Using wa operation: write opcode, separated by ';' 
+		Writing the opcode mov from the current offset and moving a memory address into a variable
+	            wa mov dword [rbp-0x4], 0xdfa8fc77
+	
+	
+	
+        	Overwriting bigger value with smaller value in mov operation
+		https://github.com/PlatyPew/picoctf-2018-writeup/tree/master/Reversing/be-quick-or-be-dead-2
+			0x0040074f      bff7030000     mov edi, 0x3f7 
 
-        Replacing bigger value with smaller value (mov edi, 0x3f7)
-            https://github.com/PlatyPew/picoctf-2018-writeup/tree/master/Reversing/be-quick-or-be-dead-2
-            wa mov edi, 5 @ 0x0040074f
-
-
-
-        Creating a Nop Sled
-            https://github.com/PlatyPew/picoctf-2018-writeup/tree/master/Reversing/be-quick-or-be-dead-2
-            write two intel nops
-                wx 9090909090 @ 0x0040087d
-
-
- 
+			wa mov edi, 5 @ 0x0040074f
+			Written 5 byte(s) (mov edi, 5) = wx bf05000000
 		
+			0x0040074f      bf05000000     mov edi, 5   		
+
+	Using wx operation: write two intel nops (from wxfile or wxseek)	
+	        Overwriting opcode to create nop sled
+        	    	https://github.com/PlatyPew/picoctf-2018-writeup/tree/master/Reversing/be-quick-or-be-dead-2
+            		write two intel nops
+                	wx 9090909090 @ 0x0040087d
+			Neccisary to check if invalid opcodes are not present in nopsled 
+
+Registers: get and set the values of those registers 
+https://radare.gitbooks.io/radare2book/debugger/registers.html
+	Purpose
+		Print value and manipulate value of registers
+
+	Examples 
+		Moving EIP/RIP to a different address 
+			dr rip=0x0040075a
+			
+					
+
+
 
 Managing Variables 
 https://radare.gitbooks.io/radare2book/analysis/variables.html

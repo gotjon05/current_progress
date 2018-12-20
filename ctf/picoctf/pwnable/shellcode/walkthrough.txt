@@ -1,0 +1,17 @@
+
+https://en.cppreference.com/w/c/io/setvbuf
+https://github.com/ITAYC0HEN/A-journey-into-Radare2
+
+hint:
+This program executes any input you give it. Can you get a shell? 
+
+Two vulnrabilities 
+	gets(buf);
+
+	((void (*)())buf)();
+
+
+was able to pass a execve shell and gain access 
+
+
+

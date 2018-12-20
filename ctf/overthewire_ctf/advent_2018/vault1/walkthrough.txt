@@ -1,0 +1,13 @@
+>> For each of the 20 wheels shown above, enter the amount of letters to move up or down to form the access code, then press enter.
+
+
+wheel = one of the twenty lines
+
+
+
+
+1. I think the numbers correspond to the position in alphabet 
+
+
+>>> import string
+>>> string.lowercase.index('b')

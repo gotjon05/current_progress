@@ -91,7 +91,7 @@ Rather than waiting for local_4h to have 0xdfea967a. Person A, moves the value 0
 That cmp check is immedietyl passed, and the program finishes before the alrm giving the Pass 
 
 
-
+----------------------
 
 Another alternative method is to overwrite the set_timer function with a nop sled. 
 
@@ -152,3 +152,45 @@ Done calculating key
 Printing flag:
 picoCTF{why_bother_doing_unnecessary_computation_29ff5e84}
 
+
+
+----------------------------------------------------------------
+
+Its also possible to avoid sigalrm by modifying the stack pointer in sym.set_timer to skip sigalrm. 
+
+I set a breakpoint in the function prologue of sym.set_timer to prevent the breakpoint from sending SIGTRAP to disrupt sigalrm. 
+
+
+ sym.set_timer ();
+         ; var int local_8h @ rbp-0x8
+         ; CALL XREF from sym.main (0x400845)
+         0x00400742      55             push rbp                 
+         0x00400743      4889e5         mov rbp, rsp             
+         0x00400746      4883ec10       sub rsp, 0x10            
+
+	[0x7f29cd5dd090]> db 0x00400742
+	[0x7f29cd5dd090]> dc
+	Be Quick Or Be Dead 1
+	=====================
+	
+	hit breakpoint at: 400742
+
+
+I proceeded to modify rip to skip the section of the function that sets the sigalrm.
+I set the stack pointer (rip) to the return address of sym.set_timer.
+
+[0x00400742]> dr rip = 0x00400795
+0x00400742 ->0x00400795
+[0x00400742]> dc
+Calculating key...
+Done calculating key
+Printing flag:
+picoCTF{why_bother_doing_unnecessary_computation_29ff5e84}
+[0x7f29cd2cfe06]> 
+
+
+
+
+
+
+I also attempted to move rip beyond the section of sym.set_timer, that sets sigalrm but i segfaulted when i set rip to the address of the return address 

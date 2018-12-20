@@ -1,12 +1,23 @@
-
+problem hint:
 Can you call stuff without executing the entire program?
 
+https://tcode2k16.github.io/blog/posts/picoctf-2018-writeup/reversing/#be-quick-or-be-dead-2
+
+
+https://blog.xdmtk.org/index.php/2018/05/30/basic-reverse-engineering-with-radare2-part-ii/
+https://eli.thegreenplace.net/2011/09/06/stack-frame-layout-on-x86-64
+
+
+pre-comupute fib sequence and store it in eax, using rip to move to return addres and  
 
 
 
 
 
 
-The issue with disabling the timer is that it will still take forever -- with many fib functions 
 
-:
+0x004007e1      e865ffffff     call sym.calculate_key   
+0x004007e6      8905d4082000   mov dword [obj.key], eax 
+
+
+
