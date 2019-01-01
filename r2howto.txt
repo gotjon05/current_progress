@@ -38,21 +38,33 @@ Preliminary work
 	rabin2 -I --- extracting information from binary files
 	find strings
 		iz
+		
+
 	continue the execution process until main is reached. 
 		[0xf7797b30]> dcu main
 
+Begining Steps
+	ood -- to reopen binary in debug mode to write and modify 
+	afl -- to see functions in program 
+	s @ (address of function) + pdf 
 
-
-Visual Graph Mode
-Visual Graph Mode by pressing  VV
-	r to change color 
+ 	afvn [new_name] ([old_name])  rename argument/local -- neccisary to seek to function where you are changing local variable
 	
 
 
-To set break points in R2
-	-- Need to run in ("debug mode") 
-	r2 -d program
-	otherwise, you will get--- "cannot place a breakpoint on unmapped memory"
+Visual Graph Mode
+	https://gist.github.com/williballenthin/6857590dab3e2a6559d7
+	http://radare.today/posts/awesome-ascii-graphs/
+	https://www.linuxdays.cz/2017/video/Tomas_Antecky-Disassembling_with_radare2.pdf
+	Graph a specific function 
+	 ex. VV @ sym.do_magic
+	
+	Understanding Graph
+		-t/f follows conditional jump
+		-tab/TAB cycles between nodes	
+		-y/Y folds current node	
+
+
 
 
 Highlighted features of R2 for the purpose of Reversing and Binary Exploitation 
@@ -109,7 +121,8 @@ https://radare.gitbooks.io/radare2book/basic_commands/write.html
 
     Steps prior to writing data
         Neccisary to map the file first
-
+	((slight confusion on when to map binary file or run radar2 in debug mode, either r2 -d or ood))
+	https://github.com/radare/radare2/issues/5865
 
     Examples:
         Using wa operation: write opcode, separated by ';' 
@@ -134,14 +147,18 @@ https://radare.gitbooks.io/radare2book/basic_commands/write.html
                 	wx 9090909090 @ 0x0040087d
 			Neccisary to check if invalid opcodes are not present in nopsled 
 
+
+
 Registers: get and set the values of those registers 
 https://radare.gitbooks.io/radare2book/debugger/registers.html
-	Purpose
-		Print value and manipulate value of registers
-
+	Using dr operation: Print value and manipulate value of registers
 	Examples 
-		Moving EIP/RIP to a different address 
+		Moving RIP to a different address to modify flow of program 
 			dr rip=0x0040075a
+
+		Changing the value of a register 
+			storing hex value into eax
+				dr eax=0x2e8e4d99
 			
 					
 

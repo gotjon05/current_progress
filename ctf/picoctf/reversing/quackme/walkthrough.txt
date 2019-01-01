@@ -1,10 +1,52 @@
-The password is a string because of strcmpr 
-
-https://stackoverflow.com/questions/4720807/how-to-skip-some-lines-in-the-gdb-debugger
-https://stackoverflow.com/questions/4037308/can-i-use-gdb-to-skip-a-line-without-having-to-type-line-numbers
+Hints:
+	Find where your input goes
 
 
-break *0x080486c5
+Concepts -- 
+
+memset 
+fill memory with a constant byte
+https://www.tutorialspoint.com/c_standard_library/c_function_memset.htm
+
+void *memset(void *str, int c, size_t n) copies the character c (an unsigned char) to the first n characters of the string pointed to, by the argument str.
+Example:
+
+	
+
+
+
+
+
+
+var_14 -- [local_14h]
+var_10 -- [local_10h]
+
+
+
+local_1ch = ebp + 0x1c
+
+he breaks down what the program is doing -- strategy of finding critical lines of code and reversing 
+https://github.com/PlatyPew/picoctf-2018-writeup/tree/master/Reversing/quackme
+	He looks at the final check that needs to be met in order to reach "You are winner"
+		 cmp dword [local_1ch], 0x19 --- ebp + 0x1c must be equal to 0x19.
+	
+
+
+
+
+address of the string saved in var_14
+	call sym.read_input
+	mov dword [local_14h], eax
+
+length of string is being saved to var_10
+	call sym.imp.strlen        
+	add esp, 0x10
+	mov dword [local_10h], eax
+	mov eax, dword [local_10h]
+
+Memset 
+	local_1ch
+local_18h
 
 
 
@@ -14,4 +56,8 @@ break *0x080486c5
 
 
 
-Trying to avoid checks and get to the part of the program that outputs -->  push str.You_are_winner  
+he shows the reversal of the program 
+https://tcode2k16.github.io/blog/posts/picoctf-2018-writeup/reversing/#quackme
+
+
+

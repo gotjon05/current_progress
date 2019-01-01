@@ -1,0 +1,16 @@
+i want pass commands to netcat 
+
+
+manually: 
+
+rm intel*
+cd ..
+echo 'Drop it in!'
+cd ..
+cd executables
+./dontLookHere
+whoami
+cp /tmp/TopSecret ../passwords   
+cd passwords
+cat TopSecret
+

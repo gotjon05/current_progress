@@ -1,0 +1,17 @@
+
+
+
+After attempting to shorten the process of sym.calculate_key by changing the argument passed to it to 5, its clear that the original number should not be modified. 
+
+0x00400796      bf4b8f0100     mov edi, 0x18f4b
+
+wa mov edi, 5 @ 0x00400796
+
+
+Printing flag:
+A�mB
+    �HV5�`L>�mr!�>J%�c@8�ir5�yrc�oNh�6,
+
+
+
+I need to reverse the function sym.calc and pre-compute the output

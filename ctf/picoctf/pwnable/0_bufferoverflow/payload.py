@@ -1,9 +1,8 @@
 #!/usr/bin/python
 
 from pwn import * 
-USER = 'jon03306'
 
-s = ssh(host='2018shell1.picoctf.com', user=USER)
+s = ssh('jon03306@2018shell1.picoctf.com')
 
 payload  = "A" * 40
 

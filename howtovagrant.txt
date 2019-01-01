@@ -4,30 +4,31 @@ Using VagrantSCP
 	https://github.com/invernizzi/vagrant-scp
 	Example of sending files from vagrant to Home
 		vagrant scp 6a5be7e:/home/vagrant/current_progress /home/gotjon05
-		-command needs to be executed in vagrant vm folder 
+		-command needs to be executed in vagrant vm folder -- which is listed as vagrant in home
 		-will overwrite if directory is not nested 
 				
 
 
-using libvert for vagrant
+Bugs 
+	First characters of the command repeated in the display when completing
+	https://unix.stackexchange.com/questions/90772/first-characters-of-the-command-repeated-in-the-display-when-completing
 
-	sudo dnf install vagrant-libvirt
-	sudo systemctl enable libvirtd
-	lsmod | grep kvm
 	
-	Download Vagrant box with libvert
-		https://app.vagrantup.com/boxes/search?utf8=✓&sort=downloads&provider=libvirt&q=ubuntu
-		
-
-	VagrantFile
 
 
 
 
 
-	Dealing with the password prompt required by libvert 
-		https://developer.fedoraproject.org/tools/vagrant/vagrant-libvirt.html
-		https://gist.github.com/gangsta/9bd039343463cd0fecd2a9e2cfd8e65d
-		
 
-Using virtualbox for vagrant 
+
+
+
+
+
+
+
+
+
+
+
+
