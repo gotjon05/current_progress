@@ -1,0 +1,26 @@
+
+The basic stuff:
+
+ctrl + o from chrome to open up file (pdf) in brower
+
+
+copy from vagrant to local machine --
+ex.     cp OCR_is_cool.png /vagrant
+
+committing to github
+    git init
+    git add .
+    git commit -m "with first notes"
+///////////////////////////////////////////////////////////////////git remote add origin https://github.com/gotjon05/current_progress.git
+    git push
+
+When two versions are different from github and localhost, you need to pull to merge the depositroy
+git pull --no-commit origin master
+
+remote contains work you dont not have
+    https://stackoverflow.com/questions/18328800/github-updates-were-rejected-because-the-remote-contains-work-that-you-do-not-h
+
+Using jekyll
+https://dev-notes.eu/2016/01/images-in-kramdown-jekyll/
+                                                                                                                                                 
+
