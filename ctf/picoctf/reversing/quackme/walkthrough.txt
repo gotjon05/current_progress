@@ -2,62 +2,118 @@ Hints:
 	Find where your input goes
 
 
-Concepts -- 
+------Concepts ---------
 
-memset 
-fill memory with a constant byte
-https://www.tutorialspoint.com/c_standard_library/c_function_memset.htm
-
-void *memset(void *str, int c, size_t n) copies the character c (an unsigned char) to the first n characters of the string pointed to, by the argument str.
-Example:
-
-	
-
-
-
-
-
+X64 local variables and parameters
 
 var_14 -- [local_14h]
 var_10 -- [local_10h]
 
 
 
-local_1ch = ebp + 0x1c
+memset 
+	purpose 
+		fill memory with a constant byte
+		https://www.tutorialspoint.com/c_standard_library/c_function_memset.htm
 
-he breaks down what the program is doing -- strategy of finding critical lines of code and reversing 
+
+void *memset(void *str, int c, size_t n) 
+	purpose
+		copies the character c (an unsigned char) to the first n characters of the string pointed to, by the argument str.
+
+
+
+------Resources ---
+
+https://www.geeksforgeeks.org/memset-c-example/
+
+breaks down what the program is doing -- strategy of finding critical lines of code and reversing 
 https://github.com/PlatyPew/picoctf-2018-writeup/tree/master/Reversing/quackme
 	He looks at the final check that needs to be met in order to reach "You are winner"
 		 cmp dword [local_1ch], 0x19 --- ebp + 0x1c must be equal to 0x19.
 	
+he shows the reversal of the program
+https://tcode2k16.github.io/blog/posts/picoctf-2018-writeup/reversing/#quackme
+
+https://pwnthemole.github.io/reverse/2018/10/18/PicoCTF2018-QuackMe.html
+
+https://github.com/sefi-roee/CTFs-Writeups/blob/master/picoCTF-2018/Reversing/06-quackme-200/solution.md
+
+https://piazza.com/class/jkimphnvxey1qo?cid=463
+
+Video-- 
+https://www.youtube.com/watch?v=vKDQ0TVL0mY
+
+https://github.com/zst123/picoctf-2018-writeups/tree/master/Solved/quackme
 
 
 
 
+--------Important sections of the code------------
+
+
+
+
+
+
+Input stored in local_14h
 address of the string saved in var_14
-	call sym.read_input
+	call sym.read_input       
 	mov dword [local_14h], eax
 
-length of string is being saved to var_10
+String_len stored in local_10h
+length is being saved to var_10
 	call sym.imp.strlen        
+	add esp, 0x10              
+	mov dword [local_10h], eax 
+ 	add eax, 1   
+
+
+Malloc -- check if its zero -- first check
+	call sym.imp.malloc     
 	add esp, 0x10
-	mov dword [local_10h], eax
-	mov eax, dword [local_10h]
-
-Memset 
-	local_1ch
-local_18h
+	mov dword [memory_for_input], eax
+	cmp dword [memory_for_input], 0 
 
 
 
+memset
+var_1C and var_18 are set to zero.
+	call sym.imp.memset        
+	add esp, 0x10              
+	mov dword [local_1ch], 0   
+	mov dword [local_18h], 0   
+	jmp 0x804870b              
+
+
+sekrutBuffer
+	mov eax, dword [local_18h]
+	add eax, obj.sekrutBuffer 
+
+
+
+For Loop
+	mov eax, dword [local_18h]
+	cmp eax, dword [local_10h] 
+	jl 0x80486bd  
+
+	0x80486bd	mov eax, dword [local_18h]
+	mov edx, dword [local_18h]          
+	moves data from src to dst        
+	mov eax, dword [local_14h]          
+	add eax, edx                        
+
+
+xor in for loop
+	 movzx eax, byte [eax]                              
+ 	 xor eax, ecx                          
 
 
 
 
 
 
-he shows the reversal of the program 
-https://tcode2k16.github.io/blog/posts/picoctf-2018-writeup/reversing/#quackme
+
 
 
 

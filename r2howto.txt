@@ -1,13 +1,42 @@
+Things to look into 
+	esil with r2 
+		https://monosource.gitbooks.io/radare2-explorations/content/tut3/tut3_-_esil.html
+		https://dustri.org/b/defeating-ioli-with-radare2-in-2017.html
+
+	Visual Panels 
+		V! 
+
+	Different functionality of R2 
+		https://www.megabeets.net/reversing-a-self-modifying-binary-with-radare2/
+
+
+	using a R2 GUI?
+		https://github.com/radareorg/cutter
+			
+	R2 for-each iterator 
+		@@?
+
+
+
+        
+Update R2
+	In r2 folder
+		sys/install.sh
+
+
 
 General guides to getting started with R2 
+	http://b404.xyz/sources/r2-cheatsheet.pdf
+	https://rada.re/get/RadareAZ-NN2015.pdf
 	https://www.radare.org/get/THC2018.pdf
 	https://blog.dutchcoders.io/getting-started-with-radare2/
 	https://asciinema.org/~Maijin?page=2
 	https://blog.xdmtk.org/index.php/2018/05/30/basic-reverse-engineering-with-radare2-part-ii/
 	https://www.megabeets.net/a-journey-into-radare-2-part-1/
+	https://blog.techorganic.com/2016/03/08/radare-2-in-0x1e-minutes/
 
 
-Making changes to ~/.radare2rc to configure Radare2
+making changes to ~/.radare2rc to configure Radare2
 	https://radare.gitbooks.io/radare2book/configuration/intro.html
 	https://gist.github.com/williballenthin/6857590dab3e2a6559d7
 	https://github.com/radare/radare2/issues/10748
@@ -31,7 +60,7 @@ e asm.describe = true
 eco solarized
 #enable command autocompletion
 e cfg.newtab = 1
-                                                                                                       ~                                                                                                       
+                                                                                                                                
 
 
 Preliminary work
@@ -45,11 +74,86 @@ Preliminary work
 
 Begining Steps
 	ood -- to reopen binary in debug mode to write and modify 
-	afl -- to see functions in program 
-	s @ (address of function) + pdf 
+	afll -- to see functions in program 
+	afvd -- view local variables
 
+	s @ (address of function) + pdf 
  	afvn [new_name] ([old_name])  rename argument/local -- neccisary to seek to function where you are changing local variable
 	
+
+Flags
+	Purpose 
+		Find interesting offsets associated with Sections, Function, Symbols, Strings,--- more useful than iz
+		
+axt -- recursive analysis 
+	Purpose 
+		find data/code references to this address	
+
+	Examples
+		axF [flg-glob]  find data/code references of flags
+		axt [addr]      find data/code references to this address		
+
+
+
+
+debugging using visual mode -- goal is to registers and local variables on display while stepping through the program like PEDA 
+https://rada.re/get/RadareAZ-NN2015.pdf
+http://faydoc.tripod.com/cpu/jae.htm -- jmp conditions
+	commands to debug 
+		Seek to PC (.) -- important to go back to eip when seek doesnt work
+		Step (s) or StepOver (S)
+		s- undo seek
+		add comment: ;
+		remove comment: ;-
+		dereference memory adddress to pring string --> ps @ memory address 
+		afvd -- get values of local variables
+		afvn new old @ address -- change variable name 
+		ps @ address --  print string
+		pf s @ address --  32bit pointer to string  ---- **
+     		pf p @ address - pointer reference
+		pf i @ addres --   %%i signed integer value (4 bytes) (see %%d and %%x)
+		dr -- values of registers-- not particularly useful since using visual mode to debug		
+		see register changes --- drd		
+		dts+  --- program state at point for recording 
+		agf --- graph function currently in function being disassembled 	
+
+	Restart the debugger when it segfaults 
+		ood --- restart the execution while attaching the debugger.
+
+
+
+Adding meta data to binary 
+https://radare.gitbooks.io/radare2book/disassembling/adding_metadata.html
+	Annotating and saving changes to binary 
+		Using radare project for debugging? 
+
+jumps if the counter is Jump if above or equal jumps if strlen of string_mem local arg is above or equal to
+
+
+		Saving project 
+			Ps <my_project> // to save my comments; the rename of function
+		Open the project file 
+			r2 -p prj myfile
+			you dont need to specify the file again when you are loading the project. so r2 -p prj is enough
+		Find Projects 
+			Within Radare2
+				Po <project>
+			Outside of Radare2 
+				radare2 -p <my_project>
+		debug project
+			radare -p <my_project> -d
+
+	
+Static Analysis
+	You need to seek to function to add meta data/comments --- pdf doesnt work, only seek to address then pd (disassemble)
+	remove comment  --> CC- @ address
+	add comment --> CC comment @  address	
+	edit comment -->  CC! @ address    
+	
+
+
+
+
 
 
 Visual Graph Mode
@@ -67,10 +171,19 @@ Visual Graph Mode
 
 
 
+
+
+
 Highlighted features of R2 for the purpose of Reversing and Binary Exploitation 
 
 	Search for string in binary using r2
 		https://radare.gitbooks.io/radare2book/search_bytes/basic_searches.html
+
+
+
+
+Dynamic Analysis 
+
 
 
 Mapping Files
@@ -170,6 +283,10 @@ https://radare.gitbooks.io/radare2book/analysis/variables.html
 		-See whats stored in local variables 
 		-
 
+
+R2 Decompiler --r2dec
+https://www.radare.org/get/THC2018.pdf
+https://github.com/wargio/r2dec-js
 
 
 

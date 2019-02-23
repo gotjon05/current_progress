@@ -3,7 +3,10 @@
 Using VagrantSCP 
 	https://github.com/invernizzi/vagrant-scp
 	Example of sending files from vagrant to Home
-		vagrant scp 6a5be7e:/home/vagrant/current_progress /home/gotjon05
+		vagrant plugin install vagrant-scp
+
+
+		vagrant scp 4a3edec:/home/vagrant/current_progress /home/gotjon05
 		-command needs to be executed in vagrant vm folder -- which is listed as vagrant in home
 		-will overwrite if directory is not nested 
 				

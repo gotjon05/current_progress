@@ -1,0 +1,3 @@
+ideas and things to check out later
+
+https://www.megabeets.net/reverse-engineering-a-gameboy-rom-with-radare2/
